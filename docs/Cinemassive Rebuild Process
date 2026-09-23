@@ -1,0 +1,259 @@
+CINEMASSIVE ALPHA FX REBUILD NOTES
+
+These are my notes from rebuilding a CineMassive Alpha FX from scratch. They document the process that worked on my system. Other Alpha FX configurations may have different hardware, card counts, or display configurations.
+
+Before doing anything to the original installation, I strongly recommend imaging the original hard drive. My original drive had read errors and bad sectors, but it still contained software, configuration information, and other material that was extremely helpful during the rebuild.
+
+ORIGINAL HARDWARE
+
+The computer originally had two memory slots populated with 4GB PC3 memory modules for a total of 8GB.
+
+There are two front-accessible drive bays. Mine had one 500GB SATA hard drive installed and the second bay was empty.
+
+The system also has a Blu-ray drive.
+
+HARDWARE UPGRADES
+
+I upgraded the memory to 16GB using two 8GB PC3 memory modules.
+
+I replaced the original 500GB SATA hard drive with a 240GB SATA SSD.
+
+The original hard drive was preserved rather than reused for the rebuild.
+
+INSTALL WINDOWS 7
+
+Download a Windows 7 Ultimate ISO that includes Service Pack 1.
+
+Use Rufus or another utility to create a bootable Windows 7 USB drive.
+
+On my Alpha FX, the USB drive did not initially appear as a boot option.
+
+To boot from USB:
+
+	Start the computer and press DEL to enter the BIOS.
+	Go to BOOT.
+	Go to HDD Drive BBS Priorities near the bottom of the screen.
+	Move the USB drive up in priority using the + key.
+	Go to Save & Exit and select the option to boot from the USB drive one time.
+
+The Windows installer should start.
+
+Go through the normal Windows 7 installation process and select the new SSD as the installation destination.
+
+When asked for a username use:
+
+LocalAdmin
+
+This isn't required, but LocalAdmin appears to be the username CineMassive used on the original system.
+
+My Alpha FX has a serial number on the lid beginning with CMD. I used this CMD number as the Windows computer name.
+
+Set a password and complete the Windows installation.
+
+PREPARE THE CINEMASSIVE INSTALLATION FILES
+
+Extract Cinemassive.zip directly to the C:\ drive.
+
+You should end up with:
+
+	C:\Cinemassive
+
+My installation files contained these folders:
+
+	C:\Cinemassive\CineNet 2.7.40
+	C:\Cinemassive\Control Screen Drivers
+	C:\Cinemassive\Driver Package 3.2.3
+
+INSTALL BASIC SYSTEM DRIVERS
+
+Before installing the CineMassive driver package, install the normal Windows hardware drivers.
+
+IMPORTANT: The CineMassive driver installation later applies Group Policy restrictions intended to prevent its drivers from being replaced. Because of that, this is a good time to get the normal system hardware working first.
+
+The devices I installed drivers for were:
+
+	Intel HD Graphics 3000 - Driver located in C:\Cinemassive\Control Screen Drivers
+	Intel(R) 82574L Gigabit Network Controller
+	Intel(R) 82579LM Gigabit Network Controller
+	Intel(R) Active Management Technology - SOL
+	Intel(R) 6 Series/C200 Series Chipset Family SMBus Controller - 1C22
+	Intel(R) 6 Series/C200 Series Management Engine Interface - 1C3A
+
+After installing these drivers, Device Manager still showed several Standard VGA Graphics Adapters with this hardware identification:
+
+	PCI\VEN_1002&DEV_6763&CC_0300
+
+There were also multiple Multimedia Video Controllers with:
+
+	PCI\VEN_DADA&DEV_0168&CC_0400
+
+These devices will be handled by the CineMassive driver package later.
+
+See:
+
+01-Device Manager.png
+
+DISABLE WINDOWS UPDATE
+
+The CineMassive configuration appears to be sensitive to driver changes.
+
+The CineMassive driver installation also puts restrictions on driver updates through Group Policy to help prevent its drivers from being overwritten.
+
+I disabled Windows Update to prevent Windows from automatically changing drivers or other components after the system was configured.
+
+Windows 7 is no longer a supported operating system and should not normally be connected to the Internet.
+
+NETWORK CONFIGURATION
+
+My Alpha FX has two network adapters.
+
+I configured Local Area Connection with the CineMassive internal network settings:
+
+IP Address: 192.160.1.201
+Subnet Mask: 255.255.255.0
+Gateway: None
+DNS: None
+
+This adapter appears to be intended for communication between CineMassive components.
+
+While in the properties for Local Area Connection, I unchecked Internet Protocol Version 6 (TCP/IPv6).
+
+IPv6 caused problems in my setup.
+
+I also disabled IPv6 on Local Area Connection 2 but left that adapter configured for DHCP.
+
+Although connecting a Windows 7 computer directly to the Internet is not recommended, during my rebuild I temporarily used the second network adapter on my home network to simplify installation.
+
+NOTE: Even if you are not connecting this system to a network Local Area Connection should be enabled and have a link light (be plugged into something).  Otherwise the IP Address 192.168.1.201 is not available and this breaks functionality.
+
+See:
+
+02-Local Area Connection Settings.png
+
+VERIFY WINDOWS COMPONENTS
+
+Before installing the CineMassive software, verify that the following components are installed:
+
+	Windows 7 Service Pack 1
+	DirectX 11 - Run dxdiag to verify the installed DirectX version.
+	.NET Framework 4.7.2
+	Windows6.1-KB3033929-x64.msu
+	Microsoft Silverlight
+
+ENABLE WINDOWS AERO
+
+Aero is important for CineMassive to work properly.
+
+After the video drivers are installed, right-click the Windows desktop and select Personalize.
+
+Select one of the Windows Aero themes.
+
+If Aero does not work, Windows provides a troubleshooting link for diagnosing Aero problems.
+
+A simple indication that Aero is functioning is that the Windows title bars become transparent.
+
+WINDOWS ACTIVATION
+
+Windows should be activated before continuing with the final CineMassive configuration.
+I found that having Windows properly activated helped avoid problems with the completed environment.
+
+REBOOT
+
+Reboot the computer.
+
+Log back into Windows as LocalAdmin.
+
+INSTALL THE CINEMASSIVE DRIVER PACKAGE
+
+Go to:
+
+C:\Cinemassive\Driver Package 3.2.3
+
+Right-click INSTALL.EXE and select Run as Administrator.
+
+Click Next.
+
+The installer should detect the CineMassive hardware installed in the system.
+
+On my system it displayed:
+
+	CineView GFX-4 G3 V1.6.1
+	CineView IEX V7.14.1
+
+I left the detected devices checked and clicked Next.
+
+The next screen is important.
+
+The selections made here define the basic display arrangement and how the CineMassive driver presents the display wall to Windows.
+
+Although these settings are apparently changeable later, I did not experiment with changing them after installation.
+
+For my 2x2 display wall I selected:
+
+	4 screens
+	2 screens per GPU
+	2x2 arrangement
+
+The next screen defines the individual display resolution.
+
+I selected:
+
+1920 x 1080 per display
+
+With four 1920x1080 displays arranged as 2x2, the installer calculated a total Windows desktop area of:
+
+	3840 x 2160
+
+Select the appropriate refresh rate and color depth for your displays. I kept the defaults.
+
+There is also an option labeled:
+
+Force Driver Install
+
+I do not know exactly what this option changes internally. During my rebuild I enabled Force Driver Install and the installation completed successfully.
+
+Click Next to configure the system and install the drivers.
+
+During installation, Windows may display a driver security prompt.
+
+Check:
+
+Always trust software from...
+
+Then click Install.
+
+I also received a warning involving the Intel HD Graphics 3000 during this process. This did not prevent my system from working after the installation.
+
+When installation finishes:
+
+REBOOT THE COMPUTER.
+
+INSTALL CINENET
+
+My CineNet installation files are located in:
+
+C:\Cinemassive\CineNet 2.7.40
+
+I installed the CineNet components using msiexec from an Administrator command prompt.
+
+Install CineNet Live System Manager:
+
+msiexec /i "Install CineNet Live System Manager (4).msi"
+
+Install CineNet Live Alpha Control Service:
+
+msiexec /i "Install CineNet Live Alpha Control Service.msi"
+
+Install CineNet Live Client:
+
+msiexec /i "Install CineNet Live Client (4).msi"
+
+CURRENT DOCUMENTATION STATUS
+
+These notes document the process I used to get Windows, the system hardware, the CineMassive driver package, and CineNet installed on my Alpha FX.
+
+The original CineMassive environment appears to have relied on software, drivers, configuration information, and documentation that are now difficult to locate publicly.
+
+Because different Alpha FX systems may have been configured differently, hardware IDs, card counts, driver versions, network settings, and display layouts should be compared against the original system whenever possible.
+
+If you have an original Alpha FX drive, preserve and image it before attempting a rebuild.
